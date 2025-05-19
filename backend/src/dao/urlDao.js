@@ -7,6 +7,7 @@ export const createUrlWithoutUser = async(originalUrl,shortUrl)=>{
       shortUrl,
     });
 
+
     await newUrl.save();
     return newUrl;
 }
@@ -19,6 +20,8 @@ export const createUrlWithUser = async (originalUrl, shortUrl, userId) => {
     user:userId
   });
 
+
   await newUrl.save();
+  return newUrl;
 };
 

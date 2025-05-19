@@ -1,14 +1,13 @@
-import { createUrlWithoutUser } from "../dao/urlDao.js";
+import { createUrlWithoutUser,createUrlWithUser } from "../dao/urlDao.js";
 import ShortUrl from "../models/shortUrl.js";
 import { generateUuid } from "../utils/helpers.js";
 
-export const generateUrl = async (originalUrl) => {
-  if (!originalUrl) {
-    return res.status(400).json({ error: "Original URL is required" });
-  }
+export const generateUrl = async (originalUrl, userId) => {
 
   const shortUrl = generateUuid(8);
-  const newUrl = await createUrlWithoutUser(originalUrl, shortUrl);
+  const newUrl = userId
+    ? await createUrlWithUser(originalUrl, shortUrl, userId)
+    : await createUrlWithoutUser(originalUrl, shortUrl);
 
   return newUrl;
 };

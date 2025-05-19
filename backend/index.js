@@ -1,11 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 //local imports
 import connectDB from './src/config/db.js';
 import shortRoute from './src/routes/shortRoute.js'
+import authRoute from './src/routes/authRoutes.js';
 
 
 //initialize express app
@@ -21,11 +23,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //local middlewares
 app.use('/api',shortRoute)
+app.use('/api',authRoute)
 
 //connect to database
 connectDB();

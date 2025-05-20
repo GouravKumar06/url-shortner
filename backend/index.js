@@ -18,12 +18,14 @@ const PORT = process.env.PORT || 3000;
 //global middleware
 app.use(
   cors({
-    origin: "https://url-shortner-frontend-2o6v.onrender.com", // Replace with your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: ["https://url-shortner-frontend-2o6v.onrender.com"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+app.options("*", cors()); // handles preflight
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

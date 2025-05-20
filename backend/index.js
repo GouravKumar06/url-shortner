@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 //global middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend URL
+  origin: 'https://url-shortner-frontend-2o6v.onrender.com/', // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

@@ -4,6 +4,7 @@ import {
   createShortUrl,
   redirectToOriginalUrl,
 } from "../controller/urlController.js";
+
 import { isAuthenticated } from '../middleware/authMiddleware.js';
 import ShortUrl from '../models/shortUrl.js';
 

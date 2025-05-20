@@ -38,8 +38,16 @@ const redirectToOriginalUrl = async (req, res) => {
   try {
     const urlExist = await redirectingToOriginalUrl(url);
 
+
     if (urlExist) {
-      res.redirect(urlExist.originalUrl);
+      let finalUrl = urlExist.originalUrl;
+
+      // Add protocol if missing
+      if (!/^https?:\/\//i.test(finalUrl)) {
+        finalUrl = "https://" + finalUrl;
+      }
+
+      return res.redirect(finalUrl);
     } else {
       return res.status(404).json({ message: "Short URL not found" });
     }

@@ -10,14 +10,6 @@ const createShortUrl = async(req, res) => {
   }
 
   if(!req.user){
-    const existOriginalUrl = await ShortUrl.findOne({ originalUrl });
-
-    if (existOriginalUrl) {
-      return res.status(200).json({
-        message: "Short URL already exists",
-        shortUrl: process.env.APP_URL + existOriginalUrl.shortUrl,
-      });
-    }
 
     const newUrl = await generateUrl(originalUrl);
 
@@ -25,15 +17,6 @@ const createShortUrl = async(req, res) => {
       originalUrl: newUrl.originalUrl,
       shortUrl: process.env.APP_URL + newUrl.shortUrl,
       message: "Short URL created successfully",
-    });
-  }
-
-  const existOriginalUrl = await ShortUrl.findOne({ originalUrl });
-
-  if (existOriginalUrl) {
-    return res.status(200).json({
-      message: "Short URL already exists",
-      shortUrl: process.env.APP_URL + existOriginalUrl.shortUrl,
     });
   }
 

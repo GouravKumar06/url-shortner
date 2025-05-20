@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { createShortUrl } from '../apis/createShortUrl';
+import { createShortUrl, createShortUrlWithAccessToken } from '../apis/createShortUrl';
+import axiosInstance from '../utils/axiosInstance';
 
 const UrlForm = () => {
     const [url, setUrl] = useState('')
@@ -8,30 +9,69 @@ const UrlForm = () => {
     const [error, setError] = useState('')
     
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        if(url === ''){
-            return setError('Please enter an url to get the Shortened Url')
+        e.preventDefault();
+      
+        if (url === '') {
+          return setError('Please enter a URL to get the shortened URL');
         }
-        setIsLoading(true)
-        setError('')
-        
+      
+        setIsLoading(true);
+        setError('');
+        setShortUrl('');
+      
+        const refreshAccessToken = async () => {
+          try {
+            const res = await axiosInstance.post('/refresh', {}, { withCredentials: true });
+            const newAccessToken = res.data.accessToken;
+            localStorage.setItem('accessToken', newAccessToken);
+            return newAccessToken;
+          } catch (err) {
+            console.error('Failed to refresh token', err);
+            return null;
+          }
+        };
+      
+        const tryWithAccessToken = async (token) => {
+          return await createShortUrlWithAccessToken(url, token);
+        };
+      
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            // Replace with your actual API endpoint
-            const response = await createShortUrl(url)
-            
-            console.log("response: ", response)
-            
-            if (!response.data.message === 'Short URL created successfully') throw new Error(response.data.message || 'Failed to shorten URL')
-            
-            setShortUrl(response.data.shortUrl)
+          await new Promise(resolve => setTimeout(resolve, 1000));
+      
+          let accessToken = localStorage.getItem('accessToken');
+      
+          if (accessToken) {
+            try {
+              const response = await tryWithAccessToken(accessToken);
+              setShortUrl(response.data.shortUrl);
+              return;
+            } catch (err) {
+              console.error("Failed to shorten URL with access token:", err);
+              accessToken = await refreshAccessToken();
+      
+              if (accessToken) {
+                try {
+                  const response = await tryWithAccessToken(accessToken);
+                  setShortUrl(response.data.shortUrl);
+                  return;
+                } catch (err2) {
+                  console.error("Retry after refresh failed:", err2);
+                }
+              }
+            }
+          }
+      
+          // Fallback to public API
+          const publicResponse = await createShortUrl(url);
+          setShortUrl(publicResponse.data.shortUrl);
+      
         } catch (err) {
-            setError(err.message)
+          console.error(err);
+          setError(err.response?.data?.message || 'Failed to shorten URL');
         } finally {
-            setIsLoading(false)
+          setIsLoading(false);
         }
-    }
-
+    };
 
     const isValidUrl = (urlString) => {
         try {

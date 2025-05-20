@@ -16,9 +16,20 @@ export const signUp = async (req, res) => {
 
     const user = await registerUser(username, email, password);
 
+    const { accessToken, refreshToken } = await generateAuthTokens(user);
+
+    // Save refresh token in cookies
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       message: "User created successfully",
       user,
+      accessToken,
     });
   }catch(err){
     console.log(err);
@@ -58,6 +69,7 @@ export const login = async (req, res) => {
     
         return res.status(200).json({
             message: "Login successful",
+            existingUser,
             accessToken,
         });
     }catch(err){
@@ -84,6 +96,22 @@ export const profile = async (req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 }
+
+export const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 
 export const refresh = async (req, res) => {

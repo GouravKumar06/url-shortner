@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 //global middleware
 app.use(
   cors({
-    origin: ["https://url-shortner-frontend-2o6v.onrender.com"],
+    origin: "https://url-shortner-frontend-2o6v.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

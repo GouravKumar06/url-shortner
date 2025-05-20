@@ -24,7 +24,6 @@ app.use(
     credentials: true,
   })
 );
-app.options("*", cors()); // handles preflight
 
 app.use(cookieParser());
 app.use(express.json());

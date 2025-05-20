@@ -1,10 +1,9 @@
+## Features
+- Login/Signup with JWT Auth
+- Create short URLs
+- View click stats
+- Auth-protected dashboard
 
-**Features**
-
-```
-   1. url short 
-   2. redirect 
-   3. custom url
-   4. url signup/signin
-   5. analytics
-```
+## Tech Stack
+- Frontend: React + TanStack Router + Tailwind 
+- Backend: Node.js, Express, MongoDB, JWT
